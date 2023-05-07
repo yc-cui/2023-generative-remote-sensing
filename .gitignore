@@ -1,0 +1,7 @@
+__pycache__
+
+datasets/decomp/*
+datasets/raw/*
+
+generative_models/taming-transformers/logs/*
+generative_models/taming-transformers/taming_transformers.egg-info
