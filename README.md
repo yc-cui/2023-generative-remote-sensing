@@ -20,10 +20,22 @@ curl -o 2021-04-03T19-39-50_cin_transformer.zip "https://app.koofr.net/content/l
 
 
 
-python main.py --base configs/custom_cond_AID_test0.2.yaml -t True --gpus 0,
+python main.py --base configs/custom_cond_AID_test0.2.yaml -t True --gpus 0,1
 
 
 42, 1126, 2000, 3407, 31415
 
 
 ln -s /data/cyc/2023-generative-remote-sensing/datasets /data/cyc/2023-generative-remote-sensing/generative_models/taming-transformers/
+
+
+ln -s /root/autodl-tmp/2023-generative-remote-sensing/datasets /root/autodl-tmp/2023-generative-remote-sensing/generative_models/taming-transformers/
+
+
+
+https://mirror.tuna.tsinghua.edu.cn/help/anaconda/
+conda config --set custom_channels.nvidia https://mirrors.cernet.edu.cn/anaconda-extra/cloud/
+
+ImportError: libSM.so.6: cannot open shared object file: No such file or directory
+apt-get update
+apt-get install libsm6

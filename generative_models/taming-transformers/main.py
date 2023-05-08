@@ -13,8 +13,8 @@ from pytorch_lightning.utilities import rank_zero_only
 
 from taming.data.utils import custom_collate
 
-os.environ["WANDB_API_KEY"] = "local-7fbab25d2df7d35a31a55a5aa4126d551709df03"
-os.environ["WANDB_MODE"] = "offline"
+# os.environ["WANDB_API_KEY"] = "local-7fbab25d2df7d35a31a55a5aa4126d551709df03"
+# os.environ["WANDB_MODE"] = "offline"
 
 def get_obj_from_str(string, reload=False):
     module, cls = string.rsplit(".", 1)
@@ -224,7 +224,7 @@ class ImageLogger(Callback):
         self.max_images = max_images
         self.logger_log_images = {
             pl.loggers.WandbLogger: self._wandb,
-            pl.loggers.TestTubeLogger: self._testtube,
+            # pl.loggers.TestTubeLogger: self._testtube,
         }
         self.log_steps = [2 ** n for n in range(int(np.log2(self.batch_freq)) + 1)]
         if not increase_log_steps:
@@ -406,7 +406,7 @@ if __name__ == "__main__":
         else:
             name = ""
         nowname = now+name+opt.postfix
-        logdir = os.path.join("logs", nowname)
+        logdir = os.path.abspath(os.path.join("logs", nowname))
 
     ckptdir = os.path.join(logdir, "checkpoints")
     cfgdir = os.path.join(logdir, "configs")
@@ -449,22 +449,23 @@ if __name__ == "__main__":
             "wandb": {
                 "target": "pytorch_lightning.loggers.WandbLogger",
                 "params": {
+                    "project": "taming",
                     "name": nowname,
                     "save_dir": logdir,
                     # "offline": opt.debug,
-                    "offline": True,
+                    "offline": False,
                     "id": nowname,
                 }
             },
-            "testtube": {
-                "target": "pytorch_lightning.loggers.TestTubeLogger",
-                "params": {
-                    "name": "testtube",
-                    "save_dir": logdir,
-                }
-            },
+            # "testtube": {
+            #     "target": "pytorch_lightning.loggers.TestTubeLogger",
+            #     "params": {
+            #         "name": "testtube",
+            #         "save_dir": logdir,
+            #     }
+            # },
         }
-        default_logger_cfg = default_logger_cfgs["testtube"]
+        default_logger_cfg = default_logger_cfgs["wandb"]
         logger_cfg = lightning_config.logger or OmegaConf.create()
         logger_cfg = OmegaConf.merge(default_logger_cfg, logger_cfg)
         trainer_kwargs["logger"] = instantiate_from_config(logger_cfg)

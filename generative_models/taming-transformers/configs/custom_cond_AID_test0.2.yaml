@@ -1,5 +1,5 @@
 model:
-  base_learning_rate: 0.0625
+  base_learning_rate: 4.5e-06
   target: taming.models.cond_transformer.Net2NetTransformer
   params:
     first_stage_key: image
@@ -44,17 +44,23 @@ model:
 data:
   target: main.DataModuleFromConfig
   params:
-    batch_size: 5
+    batch_size: 1
     num_workers: 8
     wrap: false
     train:
       target: taming.data.custom_cond_cls.CustomTrain
       params:
-        training_images_list_file: /data/cyc/2023-generative-remote-sensing/datasets/data/cls/AID_test0.2/train.flist
+        training_images_list_file: /root/autodl-tmp/2023-generative-remote-sensing/datasets/data/cls/AID_test0.2/train.flist
+        # training_images_list_file: /data/cyc/2023-generative-remote-sensing/datasets/data/cls/AID_test0.2/train.flist
         size: 256
     validation:
       target: taming.data.custom_cond_cls.CustomTest
       params:
-        test_images_list_file: /data/cyc/2023-generative-remote-sensing/datasets/data/cls/AID_test0.2/test.flist
+        test_images_list_file: /root/autodl-tmp/2023-generative-remote-sensing/datasets/data/cls/AID_test0.2/test.flist
         size: 256
 
+lightning:
+    trainer: 
+      accumulate_grad_batches: 1
+      precision: 16
+      gpus: [0, 1]
