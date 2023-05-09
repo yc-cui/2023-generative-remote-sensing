@@ -60,3 +60,13 @@ ln -s /data/cyc/2023-generative-remote-sensing/datasets /data/cyc/2023-generativ
 
 python train.py --outdir=./training-runs/pokemon --cfg=stylegan3-t --data=./data/AID_test0.2_train.zip \
     --gpus=1 --batch=64 --mirror=1 --snap 10 --batch-gpu 8 --kimg 10000 --syn_layers 10
+
+
+
+ln -s /data/cyc/2023-generative-remote-sensing/datasets /data/cyc/2023-generative-remote-sensing/generative_models/guided-diffusion/
+
+
+MODEL_FLAGS="--image_size 256 --num_channels 128 --num_res_blocks 3 --learn_sigma True" 
+DIFFUSION_FLAGS="--diffusion_steps 2000 --noise_schedule cosine  --rescale_learned_sigmas False --rescale_timesteps False" 
+TRAIN_FLAGS="--lr 5e-5 --batch_size 4 --save_interval 10000 --resume_checkpoint logs/256x256_diffusion.pt" 
+python scripts/image_train.py --data_flist datasets/data/cls/AID_test0.2/train.flist $MODEL_FLAGS $DIFFUSION_FLAGS $TRAIN_FLAGS

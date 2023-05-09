@@ -25,3 +25,7 @@ generative_models/stylegan-xl/sample_sheets/*
 *.mp4
 *.pyc
 *.zip
+
+
+.DS_Store
+classify_image_graph_def.pb
