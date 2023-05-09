@@ -32,6 +32,51 @@
                 "9,232,901"
             ],
 
+        },
+        {
+            "name": "taming-transformers: main.py",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/generative_models/taming-transformers",
+            "program": "main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/generative_models/taming-transformers"
+            },
+            "args": [
+                "--base",
+                "configs/custom_cond_AID_test0.2.yaml",
+                "-t",
+                "True",
+                "--gpus",
+                "0,1",
+            ],
+
+        },
+        {
+            "name": "stylegan-xl: dataset_tool.py",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/generative_models/stylegan-xl",
+            "program": "dataset_tool.py",
+            "python": "/home/dell/miniconda3/envs/sgxl/bin/python",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/generative_models/stylegan-xl"
+            },
+            "args": [
+                "--source",
+                "./datasets/data/cls/AID_test0.2/train.flist",
+                "--dest",
+                "./data/AID_test0.2_train.zip",
+                "--resolution",
+                "256x256",
+                "--transform",
+                "center-crop"
+            ],
+
         }
     ]
 }

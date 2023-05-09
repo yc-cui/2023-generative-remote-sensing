@@ -14,7 +14,8 @@ class LPIPS(nn.Module):
         super().__init__()
         self.scaling_layer = ScalingLayer()
         self.chns = [64, 128, 256, 512, 512]  # vg16 features
-        self.net = vgg16(pretrained=True, requires_grad=False)
+        # self.net = vgg16(pretrained=True, requires_grad=False)
+        self.net = vgg16(weights=models.VGG16_Weights.IMAGENET1K_V1, requires_grad=False)
         self.lin0 = NetLinLayer(self.chns[0], use_dropout=use_dropout)
         self.lin1 = NetLinLayer(self.chns[1], use_dropout=use_dropout)
         self.lin2 = NetLinLayer(self.chns[2], use_dropout=use_dropout)
@@ -74,9 +75,9 @@ class NetLinLayer(nn.Module):
 
 
 class vgg16(torch.nn.Module):
-    def __init__(self, requires_grad=False, pretrained=True):
+    def __init__(self, requires_grad=False, weights=models.VGG16_Weights.IMAGENET1K_V1):
         super(vgg16, self).__init__()
-        vgg_pretrained_features = models.vgg16(pretrained=pretrained).features
+        vgg_pretrained_features = models.vgg16(weights=weights).features
         self.slice1 = torch.nn.Sequential()
         self.slice2 = torch.nn.Sequential()
         self.slice3 = torch.nn.Sequential()

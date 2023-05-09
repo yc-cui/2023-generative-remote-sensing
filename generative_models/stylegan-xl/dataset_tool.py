@@ -110,6 +110,39 @@ def open_image_folder(source_dir, *, max_images: Optional[int]):
 
 #----------------------------------------------------------------------------
 
+def open_image_flist(source_flist, *, max_images: Optional[int]):
+    input_images = []
+    labels = {}
+
+    with open(source_flist) as f:
+        for line in f:
+            img_path, label = line.strip().split(',')
+            input_images.append(img_path)
+            labels[img_path] = label
+
+    input_images = [str(Path(img_path)) for img_path in input_images if is_image_ext(img_path) and os.path.isfile(img_path)]
+
+    max_idx = maybe_min(len(input_images), max_images)
+
+    def iterate_images():
+        for idx, fname in enumerate(input_images):
+            img = imageio.imread(fname)
+
+            # alpha conversion
+            if img.shape[-1] == 4:
+                img = png_to_rgb(img)
+
+            label = labels.get(fname, None)
+
+            yield dict(img=img, label=label)
+
+            if idx >= max_idx-1:
+                break
+
+    return max_idx, iterate_images()
+
+#----------------------------------------------------------------------------
+
 def open_image_zip(source, *, max_images: Optional[int]):
     with zipfile.ZipFile(source, mode='r') as z:
         input_images = [str(f) for f in sorted(z.namelist()) if is_image_ext(f)]
@@ -294,6 +327,8 @@ def open_dataset(source, *, max_images: Optional[int]):
             return open_mnist(source, max_images=max_images)
         elif file_ext(source) == 'zip':
             return open_image_zip(source, max_images=max_images)
+        elif file_ext(source) == 'flist':
+            return open_image_flist(source, max_images=max_images)
         else:
             assert False, 'unknown archive type'
     else:

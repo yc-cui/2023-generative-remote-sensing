@@ -20,8 +20,9 @@ curl -o 2021-04-03T19-39-50_cin_transformer.zip "https://app.koofr.net/content/l
 
 
 
-python main.py --base configs/custom_cond_AID_test0.2.yaml -t True --gpus 0,1
+python main.py --base configs/custom_cond_AID_test0.2.yaml -t True --resume logs/2023-05-08T22-57-48_custom_cond_AID_test0.2
 
+python main.py --base configs/custom_vqgan_AID_test0.2.yaml -t True 
 
 42, 1126, 2000, 3407, 31415
 
@@ -39,3 +40,23 @@ conda config --set custom_channels.nvidia https://mirrors.cernet.edu.cn/anaconda
 ImportError: libSM.so.6: cannot open shared object file: No such file or directory
 apt-get update
 apt-get install libsm6
+
+
+
+docker run --rm -d -v wandb:/vol -p 8087:8080  --name wandb-local wandb/local
+
+
+
+
+-------------------------------------------
+
+
+
+python dataset_tool.py --source=./data/few-shot-images/pokemon --dest=./data/pokemon256.zip --resolution=256x256 --transform=center-crop
+
+
+
+ln -s /data/cyc/2023-generative-remote-sensing/datasets /data/cyc/2023-generative-remote-sensing/generative_models/stylegan-xl/
+
+python train.py --outdir=./training-runs/pokemon --cfg=stylegan3-t --data=./data/AID_test0.2_train.zip \
+    --gpus=1 --batch=64 --mirror=1 --snap 10 --batch-gpu 8 --kimg 10000 --syn_layers 10

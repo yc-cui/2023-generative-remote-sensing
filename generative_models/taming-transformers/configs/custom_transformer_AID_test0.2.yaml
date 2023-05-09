@@ -1,5 +1,5 @@
 model:
-  base_learning_rate: 4.5e-06
+  base_learning_rate: 4.5e-6
   target: taming.models.cond_transformer.Net2NetTransformer
   params:
     first_stage_key: image
@@ -8,9 +8,9 @@ model:
       target: taming.modules.transformer.mingpt.GPT
       params:
         vocab_size: 16384
-        block_size: 256
-        n_layer: 48
-        n_head: 24
+        block_size: 64 # 256
+        n_layer: 24 # 48
+        n_head: 12 # 24
         n_embd: 1536
     first_stage_config:
       target: taming.models.vqgan.VQModel
@@ -20,10 +20,10 @@ model:
         ddconfig:
           double_z: false
           z_channels: 256
-          resolution: 256
+          resolution: 64 # 256
           in_channels: 3
           out_ch: 3
-          ch: 128
+          ch: 64 # 128
           ch_mult:
           - 1
           - 1
@@ -50,17 +50,20 @@ data:
     train:
       target: taming.data.custom_cond_cls.CustomTrain
       params:
-        training_images_list_file: /root/autodl-tmp/2023-generative-remote-sensing/datasets/data/cls/AID_test0.2/train.flist
-        # training_images_list_file: /data/cyc/2023-generative-remote-sensing/datasets/data/cls/AID_test0.2/train.flist
-        size: 256
+        # training_images_list_file: /root/autodl-tmp/2023-generative-remote-sensing/datasets/data/cls/AID_test0.2/train.flist
+        training_images_list_file: /data/cyc/2023-generative-remote-sensing/datasets/data/cls/AID_test0.2/train.flist
+        size: 64 # 256
     validation:
       target: taming.data.custom_cond_cls.CustomTest
       params:
-        test_images_list_file: /root/autodl-tmp/2023-generative-remote-sensing/datasets/data/cls/AID_test0.2/test.flist
-        size: 256
+        # test_images_list_file: /root/autodl-tmp/2023-generative-remote-sensing/datasets/data/cls/AID_test0.2/test.flist
+        test_images_list_file: /data/cyc/2023-generative-remote-sensing/datasets/data/cls/AID_test0.2/test.flist
+        size: 64 # 256
 
 lightning:
     trainer: 
-      accumulate_grad_batches: 1
+      accumulate_grad_batches: 8
       precision: 16
-      gpus: [0, 1]
+      accelerator: 'gpu'
+      devices: [0, 1]
+      max_epochs: 60

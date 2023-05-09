@@ -12,9 +12,10 @@ from pytorch_lightning.callbacks import ModelCheckpoint, Callback, LearningRateM
 from pytorch_lightning.utilities import rank_zero_only
 
 from taming.data.utils import custom_collate
+import wandb
 
-# os.environ["WANDB_API_KEY"] = "local-7fbab25d2df7d35a31a55a5aa4126d551709df03"
-# os.environ["WANDB_MODE"] = "offline"
+os.environ["WANDB_API_KEY"] = "local-226655cb016a45acfe3d80098cf4de3ff1cd5a09"
+os.environ["WANDB_MODE"] = "offline"
 
 def get_obj_from_str(string, reload=False):
     module, cls = string.rsplit(".", 1)
@@ -164,17 +165,24 @@ class DataModuleFromConfig(pl.LightningDataModule):
                 self.datasets[k] = WrappedDataset(self.datasets[k])
 
     def _train_dataloader(self):
+        # return DataLoader(self.datasets["train"], batch_size=self.batch_size,
+        #                   num_workers=self.num_workers, shuffle=True, collate_fn=custom_collate)
         return DataLoader(self.datasets["train"], batch_size=self.batch_size,
-                          num_workers=self.num_workers, shuffle=True, collate_fn=custom_collate)
+                          num_workers=self.num_workers, shuffle=True, pin_memory=True)
 
     def _val_dataloader(self):
+        # return DataLoader(self.datasets["validation"],
+        #                   batch_size=self.batch_size,
+        #                   num_workers=self.num_workers, collate_fn=custom_collate)
         return DataLoader(self.datasets["validation"],
-                          batch_size=self.batch_size,
-                          num_workers=self.num_workers, collate_fn=custom_collate)
+                  batch_size=self.batch_size,
+                  num_workers=self.num_workers, pin_memory=True)
 
     def _test_dataloader(self):
+        # return DataLoader(self.datasets["test"], batch_size=self.batch_size,
+        #                   num_workers=self.num_workers, collate_fn=custom_collate)
         return DataLoader(self.datasets["test"], batch_size=self.batch_size,
-                          num_workers=self.num_workers, collate_fn=custom_collate)
+                          num_workers=self.num_workers, pin_memory=True)
 
 
 class SetupCallback(Callback):
@@ -188,7 +196,7 @@ class SetupCallback(Callback):
         self.config = config
         self.lightning_config = lightning_config
 
-    def on_pretrain_routine_start(self, trainer, pl_module):
+    def on_fit_start(self, trainer, pl_module):
         if trainer.global_rank == 0:
             # Create logdirs and save configs
             os.makedirs(self.logdir, exist_ok=True)
@@ -233,7 +241,7 @@ class ImageLogger(Callback):
 
     @rank_zero_only
     def _wandb(self, pl_module, images, batch_idx, split):
-        raise ValueError("No way wandb")
+        # raise ValueError("No way wandb")
         grids = dict()
         for k in images:
             grid = torchvision.utils.make_grid(images[k])
@@ -311,7 +319,7 @@ class ImageLogger(Callback):
             return True
         return False
 
-    def on_train_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
+    def on_train_batch_end(self, trainer, pl_module, outputs, batch, batch_idx):
         self.log_img(pl_module, batch, batch_idx, split="train")
 
     def on_validation_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
@@ -410,7 +418,7 @@ if __name__ == "__main__":
 
     ckptdir = os.path.join(logdir, "checkpoints")
     cfgdir = os.path.join(logdir, "configs")
-    seed_everything(opt.seed)
+    seed_everything(opt.seed, workers=True)
 
     try:
         # init and save configs
@@ -421,14 +429,15 @@ if __name__ == "__main__":
         # merge trainer cli with config
         trainer_config = lightning_config.get("trainer", OmegaConf.create())
         # default to ddp
-        trainer_config["distributed_backend"] = "ddp"
+        # trainer_config["distributed_backend"] = "ddp"
+        trainer_config["strategy"] = "ddp"
         for k in nondefault_trainer_args(opt):
             trainer_config[k] = getattr(opt, k)
-        if not "gpus" in trainer_config:
+        if not "devices" in trainer_config:
             del trainer_config["distributed_backend"]
             cpu = True
         else:
-            gpuinfo = trainer_config["gpus"]
+            gpuinfo = trainer_config["devices"]
             print(f"Running on GPUs {gpuinfo}")
             cpu = False
         trainer_opt = argparse.Namespace(**trainer_config)
@@ -440,11 +449,6 @@ if __name__ == "__main__":
         # trainer and callbacks
         trainer_kwargs = dict()
 
-        # default logger configs
-        # NOTE wandb < 0.10.0 interferes with shutdown
-        # wandb >= 0.10.0 seems to fix it but still interferes with pudb
-        # debugging (wrongly sized pudb ui)
-        # thus prefer testtube for now
         default_logger_cfgs = {
             "wandb": {
                 "target": "pytorch_lightning.loggers.WandbLogger",
@@ -453,22 +457,22 @@ if __name__ == "__main__":
                     "name": nowname,
                     "save_dir": logdir,
                     # "offline": opt.debug,
-                    "offline": False,
+                    "offline": True,
                     "id": nowname,
                 }
             },
-            # "testtube": {
-            #     "target": "pytorch_lightning.loggers.TestTubeLogger",
+            # "csv": {
+            #     "target": "pytorch_lightning.loggers.CSVLogger",
             #     "params": {
-            #         "name": "testtube",
+            #         "name": "csv",
             #         "save_dir": logdir,
             #     }
             # },
         }
-        default_logger_cfg = default_logger_cfgs["wandb"]
-        logger_cfg = lightning_config.logger or OmegaConf.create()
-        logger_cfg = OmegaConf.merge(default_logger_cfg, logger_cfg)
-        trainer_kwargs["logger"] = instantiate_from_config(logger_cfg)
+        os.makedirs(os.path.join(logdir, "wandb"), exist_ok=True)
+        logger_cfg = lightning_config.get("logger", OmegaConf.create())
+        logger_cfg = OmegaConf.merge(default_logger_cfgs, logger_cfg)
+        trainer_kwargs["logger"] = [instantiate_from_config(logger_cfg[k]) for k in logger_cfg]
 
         # modelcheckpoint - use TrainResult/EvalResult(checkpoint_on=metric) to
         # specify which metric is used to determine best models
@@ -486,9 +490,9 @@ if __name__ == "__main__":
             default_modelckpt_cfg["params"]["monitor"] = model.monitor
             default_modelckpt_cfg["params"]["save_top_k"] = 3
 
-        modelckpt_cfg = lightning_config.modelcheckpoint or OmegaConf.create()
+        modelckpt_cfg = lightning_config.get("modelcheckpoint", OmegaConf.create())
         modelckpt_cfg = OmegaConf.merge(default_modelckpt_cfg, modelckpt_cfg)
-        trainer_kwargs["checkpoint_callback"] = instantiate_from_config(modelckpt_cfg)
+        # trainer_kwargs["checkpoint_callback"] = instantiate_from_config(modelckpt_cfg)
 
         # add callback which sets up log directory
         default_callbacks_cfg = {
@@ -520,9 +524,10 @@ if __name__ == "__main__":
                 }
             },
         }
-        callbacks_cfg = lightning_config.callbacks or OmegaConf.create()
+        callbacks_cfg = lightning_config.get("callbacks", OmegaConf.create())
         callbacks_cfg = OmegaConf.merge(default_callbacks_cfg, callbacks_cfg)
         trainer_kwargs["callbacks"] = [instantiate_from_config(callbacks_cfg[k]) for k in callbacks_cfg]
+        trainer_kwargs["callbacks"].append(instantiate_from_config(modelckpt_cfg))
 
         trainer = Trainer.from_argparse_args(trainer_opt, **trainer_kwargs)
 
@@ -537,7 +542,7 @@ if __name__ == "__main__":
         # configure learning rate
         bs, base_lr = config.data.params.batch_size, config.model.base_learning_rate
         if not cpu:
-            ngpu = len(lightning_config.trainer.gpus.strip(",").split(','))
+            ngpu = len(lightning_config.trainer.devices)
         else:
             ngpu = 1
         accumulate_grad_batches = lightning_config.trainer.accumulate_grad_batches or 1
@@ -571,7 +576,7 @@ if __name__ == "__main__":
                 melk()
                 raise
         if not opt.no_test and not trainer.interrupted:
-            trainer.test(model, data)
+            trainer.validate(model, data)
     except Exception:
         if opt.debug and trainer.global_rank==0:
             try:
