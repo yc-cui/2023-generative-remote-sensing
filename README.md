@@ -45,7 +45,8 @@ apt-get install libsm6
 
 docker run --rm -d -v wandb:/vol -p 8087:8080  --name wandb-local wandb/local
 
-
+VQGAN ImageNet (f=16), 16384
+wget https://heibox.uni-heidelberg.de/seafhttp/files/0580db10-44f5-4341-883f-f8952a1bca21/last.ckpt
 
 
 ------------------------------------------------------------------------------------
