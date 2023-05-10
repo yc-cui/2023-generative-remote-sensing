@@ -1,6 +1,22 @@
 # Generative remote sensing
 
+
+## Environment
+
+https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+/hy-tmp/miniconda3
+https://mirror.tuna.tsinghua.edu.cn/help/anaconda/
+conda config --set custom_channels.nvidia https://mirrors.cernet.edu.cn/anaconda-extra/cloud/
+conda clean -i
+
+gpushare-cli baidu down /2023_generative_remote_sensing/pre-trained/stylegan-xl/imagenet256.pkl .
+
+git config --global user.name "yc-cui"
+git config --global user.email "2548846280@qq.com"
 ## Datasets
+
+gpushare-cli baidu down /2023_generative_remote_sensing/datasets/AID/AID_dataset.zip
+
 
 ```bash
 unzip x -d ../decomp
@@ -9,11 +25,13 @@ unzip NASC_TG2.zip '*RGB/*' -d ../decomp/NASC_TG2
 
 ## Models
 
-git clone https://github.com/autonomousvision/stylegan-xl.git
-git clone https://ghproxy.com/https://github.com/autonomousvision/stylegan-xl.git
 
-git clone https://github.com/CompVis/taming-transformers.git
-git clone https://ghproxy.com/https://github.com/CompVis/taming-transformers.git
+### taming-transformers
+
+gpushare-cli baidu down /2023_generative_remote_sensing/pre-trained/taming-transformers/vqgan_imagenet_f16_16384.ckpt /hy-tmp/2023_generative_remote_sensing/generative_models/taming-transformers/logs/
+
+conda env create -f environment.yaml
+
 
 curl -o 2021-04-03T19-39-50_cin_transformer.zip "https://app.koofr.net/content/links/90cbd5aa-ef70-4f5e-99bc-f12e5a89380e/files/get/2021-04-03T19-39-50_cin_transformer.zip?path=%2F&force"
 
@@ -33,9 +51,7 @@ ln -s /data/cyc/2023-generative-remote-sensing/datasets /data/cyc/2023-generativ
 ln -s /root/autodl-tmp/2023-generative-remote-sensing/datasets /root/autodl-tmp/2023-generative-remote-sensing/generative_models/taming-transformers/
 
 
-
-https://mirror.tuna.tsinghua.edu.cn/help/anaconda/
-conda config --set custom_channels.nvidia https://mirrors.cernet.edu.cn/anaconda-extra/cloud/
+ln -s /hy-tmp/2023-generative-remote-sensing/datasets /hy-tmp/2023-generative-remote-sensing/generative_models/taming-transformers/
 
 ImportError: libSM.so.6: cannot open shared object file: No such file or directory
 apt-get update
@@ -46,8 +62,7 @@ apt-get install libsm6
 docker run --rm -d -v wandb:/vol -p 8087:8080  --name wandb-local wandb/local
 
 VQGAN ImageNet (f=16), 16384
-wget https://heibox.uni-heidelberg.de/seafhttp/files/0580db10-44f5-4341-883f-f8952a1bca21/last.ckpt
-
+https://heibox.uni-heidelberg.de/d/a7530b09fed84f80a887/
 
 ------------------------------------------------------------------------------------
 
