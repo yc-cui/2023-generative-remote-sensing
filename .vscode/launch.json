@@ -31,7 +31,6 @@
                 "--classes",
                 "9,232,901"
             ],
-
         },
         {
             "name": "taming-transformers: main.py",
@@ -52,7 +51,6 @@
                 "--gpus",
                 "0,1",
             ],
-
         },
         {
             "name": "stylegan-xl: dataset_tool.py",
@@ -76,7 +74,48 @@
                 "--transform",
                 "center-crop"
             ],
-
+        },
+        {
+            "name": "stylegan-xl: train.py",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/generative_models/stylegan-xl",
+            "program": "train.py",
+            "python": "/home/dell/miniconda3/envs/sgxl/bin/python",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/generative_models/stylegan-xl",
+                "CUDA_VISIBLE_DEVICES": "1"
+            },
+            "args": [
+                "--outdir",
+                "./training-runs/AID_test0.2_train_128",
+                "--cfg",
+                "stylegan3-t",
+                "--data",
+                "./data/AID_test0.2_train_128.zip",
+                "--gpus",
+                "1",
+                "--batch",
+                "16",
+                "--mirror",
+                "1",
+                "--snap",
+                "10",
+                "--batch-gpu",
+                "16",
+                "--kimg",
+                "100",
+                "--syn_layers",
+                "31",
+                "--cond",
+                "True",
+                "--seed",
+                "42",
+                "--resume",
+                "./logs/imagenet256.pkl"
+            ],
         }
     ]
 }
