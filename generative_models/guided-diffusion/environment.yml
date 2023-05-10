@@ -1,0 +1,17 @@
+name: guided
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - pip
+  - openmpi=4.0.2
+  - numpy=1.22.4
+  - pillow=8.3.1
+  - pytorch=1.13.1
+  - pytorch-cuda=11.7
+  - tqdm=4.62.2
+  - pip:
+    - blobfile>=1.0.5
