@@ -461,13 +461,13 @@ if __name__ == "__main__":
                     "id": nowname,
                 }
             },
-            # "csv": {
-            #     "target": "pytorch_lightning.loggers.CSVLogger",
-            #     "params": {
-            #         "name": "csv",
-            #         "save_dir": logdir,
-            #     }
-            # },
+            "csv": {
+                "target": "pytorch_lightning.loggers.CSVLogger",
+                "params": {
+                    "name": "csv",
+                    "save_dir": logdir,
+                }
+            },
         }
         os.makedirs(os.path.join(logdir, "wandb"), exist_ok=True)
         logger_cfg = lightning_config.get("logger", OmegaConf.create())
