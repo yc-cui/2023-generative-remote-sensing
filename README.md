@@ -116,3 +116,7 @@ ln -s /data/cyc/2023-generative-remote-sensing/datasets /data/cyc/2023-generativ
 
 bash scripts/image_train.sh configs/custom_train_AID_test0.2.yaml
 bash scripts/image_sample.sh  configs/custom_sample_AID_test0.2.yaml
+
+
+script_util.py NUM_CLASSES = 30
+dist_util.py CUDA_VISIBLE_DEVICES
