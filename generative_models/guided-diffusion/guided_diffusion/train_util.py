@@ -115,11 +115,11 @@ class TrainLoop:
         if resume_checkpoint:
             self.resume_step = parse_resume_step_from_filename(resume_checkpoint)
             logger.log(f"loading model from checkpoint: {resume_checkpoint}...")
-            self.model.load_state_dict(
-                dist_util.load_state_dict(
+            ckpt = dist_util.load_state_dict(
                     resume_checkpoint, map_location=dist_util.dev()
                 )
-            )
+            ckpt.pop("label_emb.weight")
+            self.model.load_state_dict(ckpt, strict=False)
 
         dist_util.sync_params(self.model.parameters())
 

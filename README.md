@@ -109,10 +109,13 @@ OK: https://github.com/NVlabs/stylegan3/commit/407db86e6fe432540a225153101882886
 ------------------------------------------------------------------------------------
 
 
-conda env create -f environment.yml
+mamba env create -f environment.yml
 
 
 ln -s /data/cyc/2023-generative-remote-sensing/datasets /data/cyc/2023-generative-remote-sensing/generative_models/guided-diffusion/
+
+
+ln -s /root/autodl-tmp/2023-generative-remote-sensing/datasets /root/autodl-tmp/2023-generative-remote-sensing/generative_models/guided-diffusion/
 
 bash scripts/image_train.sh configs/custom_train_AID_test0.2.yaml
 bash scripts/image_sample.sh  configs/custom_sample_AID_test0.2.yaml
@@ -120,3 +123,4 @@ bash scripts/image_sample.sh  configs/custom_sample_AID_test0.2.yaml
 
 script_util.py NUM_CLASSES = 30
 dist_util.py CUDA_VISIBLE_DEVICES
+image_datasets.py num_workers=14

@@ -6,7 +6,7 @@ import argparse
 import datetime
 import os
 import wandb
-# os.environ["WANDB_MODE"] = "offline"
+os.environ["WANDB_MODE"] = "offline"
 from guided_diffusion import dist_util, logger
 from guided_diffusion.image_datasets import load_data, load_data_flist
 from guided_diffusion.resample import create_named_schedule_sampler
@@ -24,6 +24,7 @@ def main():
 
     dist_util.setup_dist()
     
+    # format_strs = ["csv", "stdout", "log"]
     format_strs = ["csv", "stdout", "log", "wandb"]
     name = datetime.datetime.now().strftime("openai-%Y-%m-%d-%H-%M-%S-%f")
     dir = os.path.join("logs", name)

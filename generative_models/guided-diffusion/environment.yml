@@ -8,6 +8,7 @@ dependencies:
   - python=3.9
   - pip
   - openmpi=4.0.2
+  - mpi4py=3.1.4
   - numpy=1.22.4
   - pillow=8.3.1
   - pytorch=1.13.1
