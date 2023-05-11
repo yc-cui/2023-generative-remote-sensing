@@ -14,6 +14,7 @@ import tempfile
 import warnings
 from collections import defaultdict
 from contextlib import contextmanager
+import wandb
 
 DEBUG = 10
 INFO = 20
@@ -146,6 +147,17 @@ class CSVOutputFormat(KVWriter):
     def close(self):
         self.file.close()
 
+class WandbOutputFormat(KVWriter):
+    def __init__(self):
+        pass
+
+    def writekvs(self, kvs):
+        # Add our current row to the history
+        wandb.log(kvs)
+
+    def close(self):
+        pass
+
 
 class TensorBoardOutputFormat(KVWriter):
     """
@@ -200,6 +212,8 @@ def make_output_format(format, ev_dir, log_suffix=""):
         return CSVOutputFormat(osp.join(ev_dir, "progress%s.csv" % log_suffix))
     elif format == "tensorboard":
         return TensorBoardOutputFormat(osp.join(ev_dir, "tb%s" % log_suffix))
+    elif format == "wandb":
+        return WandbOutputFormat()
     else:
         raise ValueError("Unknown format specified: %s" % (format,))
 
@@ -451,7 +465,6 @@ def configure(dir=None, format_strs=None, comm=None, log_suffix=""):
             datetime.datetime.now().strftime("openai-%Y-%m-%d-%H-%M-%S-%f"),
         )
     assert isinstance(dir, str)
-    dir = osp.join(os.path.expanduser(dir), datetime.datetime.now().strftime("openai-%Y-%m-%d-%H-%M-%S-%f"))
     os.makedirs(os.path.expanduser(dir), exist_ok=True)
 
     rank = get_rank_without_mpi_import()

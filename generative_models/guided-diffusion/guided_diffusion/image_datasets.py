@@ -46,7 +46,7 @@ def load_data_flist(
             file_path, label = line.strip().split(',')
             all_files.append(file_path)
             classes.append(label)
-    print(classes)
+            
     dataset = ImageDataset(
         image_size,
         all_files,

@@ -114,4 +114,5 @@ conda env create -f environment.yml
 
 ln -s /data/cyc/2023-generative-remote-sensing/datasets /data/cyc/2023-generative-remote-sensing/generative_models/guided-diffusion/
 
-bash scripts/image_train.sh configs/custom_AID_test0.2.yaml
+bash scripts/image_train.sh configs/custom_train_AID_test0.2.yaml
+bash scripts/image_sample.sh  configs/custom_sample_AID_test0.2.yaml

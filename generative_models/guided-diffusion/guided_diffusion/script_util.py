@@ -60,6 +60,7 @@ def model_and_diffusion_defaults():
         resblock_updown=False,
         use_fp16=False,
         use_new_attention_order=False,
+        max_step=200000,
     )
     res.update(diffusion_defaults())
     return res
@@ -95,6 +96,7 @@ def create_model_and_diffusion(
     resblock_updown,
     use_fp16,
     use_new_attention_order,
+    max_step,
 ):
     model = create_model(
         image_size,

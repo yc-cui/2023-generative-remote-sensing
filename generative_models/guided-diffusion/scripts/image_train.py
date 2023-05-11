@@ -3,7 +3,10 @@ Train a diffusion model on images.
 """
 
 import argparse
-
+import datetime
+import os
+import wandb
+# os.environ["WANDB_MODE"] = "offline"
 from guided_diffusion import dist_util, logger
 from guided_diffusion.image_datasets import load_data, load_data_flist
 from guided_diffusion.resample import create_named_schedule_sampler
@@ -20,7 +23,13 @@ def main():
     args = create_argparser().parse_args()
 
     dist_util.setup_dist()
-    logger.configure(dir="logs", format_strs=["csv", "stdout", "log"])
+    
+    format_strs = ["csv", "stdout", "log", "wandb"]
+    name = datetime.datetime.now().strftime("openai-%Y-%m-%d-%H-%M-%S-%f")
+    dir = os.path.join("logs", name)
+    logger.configure(dir=dir, format_strs=format_strs)
+    if "wandb" in format_strs:
+        wandb.init(project="guided", dir=dir, name=name, config=vars(args))
 
     logger.log("creating model and diffusion...")
     model, diffusion = create_model_and_diffusion(
