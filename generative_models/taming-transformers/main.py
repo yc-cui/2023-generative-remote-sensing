@@ -14,8 +14,8 @@ from pytorch_lightning.utilities import rank_zero_only
 from taming.data.utils import custom_collate
 import wandb
 
-os.environ["WANDB_API_KEY"] = "local-226655cb016a45acfe3d80098cf4de3ff1cd5a09"
-os.environ["WANDB_MODE"] = "offline"
+# os.environ["WANDB_API_KEY"] = "local-226655cb016a45acfe3d80098cf4de3ff1cd5a09"
+# os.environ["WANDB_MODE"] = "offline"
 
 def get_obj_from_str(string, reload=False):
     module, cls = string.rsplit(".", 1)
@@ -457,7 +457,7 @@ if __name__ == "__main__":
                     "name": nowname,
                     "save_dir": logdir,
                     # "offline": opt.debug,
-                    "offline": True,
+                    "offline": False,
                     "id": nowname,
                 }
             },

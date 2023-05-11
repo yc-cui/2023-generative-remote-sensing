@@ -6,8 +6,14 @@
 https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 /hy-tmp/miniconda3
 https://mirror.tuna.tsinghua.edu.cn/help/anaconda/
+https://developer.aliyun.com/mirror/anaconda
+https://mirrors.sustech.edu.cn/help/anaconda.html#configuration
+https://mirrors.tuna.tsinghua.edu.cn/help/pypi/
+
 conda config --set custom_channels.nvidia https://mirrors.cernet.edu.cn/anaconda-extra/cloud/
 conda clean -i
+
+ln -s /root/autodl-tmp/miniconda3 /root/miniconda3
 
 gpushare-cli baidu down /2023_generative_remote_sensing/pre-trained/stylegan-xl/imagenet256.pkl .
 
@@ -31,7 +37,7 @@ unzip NASC_TG2.zip '*RGB/*' -d ../decomp/NASC_TG2
 gpushare-cli baidu down /2023_generative_remote_sensing/pre-trained/taming-transformers/vqgan_imagenet_f16_16384.ckpt /hy-tmp/2023_generative_remote_sensing/generative_models/taming-transformers/logs/
 
 conda env create -f environment.yaml
-
+conda activate taming
 
 curl -o 2021-04-03T19-39-50_cin_transformer.zip "https://app.koofr.net/content/links/90cbd5aa-ef70-4f5e-99bc-f12e5a89380e/files/get/2021-04-03T19-39-50_cin_transformer.zip?path=%2F&force"
 
@@ -41,6 +47,7 @@ curl -o 2021-04-03T19-39-50_cin_transformer.zip "https://app.koofr.net/content/l
 python main.py --base configs/custom_cond_AID_test0.2.yaml -t True --resume logs/2023-05-08T22-57-48_custom_cond_AID_test0.2
 
 python main.py --base configs/custom_vqgan_AID_test0.2.yaml -t True 
+python main.py --base configs/custom_vqgan_AID_test0.2.yaml -t True ;  /usr/bin/shutdown   
 
 42, 1126, 2000, 3407, 31415
 
