@@ -15,6 +15,8 @@ generative_models/stylegan-xl/training-runs/*
 generative_models/stylegan-xl/out/*
 generative_models/stylegan-xl/sample_sheets/*
 
+generative_models/guided-diffusion/logs/*
+
 *.swp
 *.pth
 *.pt
