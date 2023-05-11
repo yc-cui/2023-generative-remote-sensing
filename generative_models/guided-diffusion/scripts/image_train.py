@@ -54,6 +54,7 @@ def main():
         schedule_sampler=schedule_sampler,
         weight_decay=args.weight_decay,
         lr_anneal_steps=args.lr_anneal_steps,
+        max_step=args.max_step,
     ).run_loop()
 
 

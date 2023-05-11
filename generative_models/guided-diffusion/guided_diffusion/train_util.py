@@ -38,6 +38,7 @@ class TrainLoop:
         schedule_sampler=None,
         weight_decay=0.0,
         lr_anneal_steps=0,
+        max_step=200000,
     ):
         self.model = model
         self.diffusion = diffusion
@@ -60,6 +61,7 @@ class TrainLoop:
         self.lr_anneal_steps = lr_anneal_steps
 
         self.step = 0
+        self.max_step = max_step
         self.resume_step = 0
         self.global_batch = self.batch_size * dist.get_world_size()
 
@@ -163,6 +165,8 @@ class TrainLoop:
                 if os.environ.get("DIFFUSION_TRAINING_TEST", "") and self.step > 0:
                     return
             self.step += 1
+            if self.step >= self.max_step:
+                break
         # Save the last checkpoint if it wasn't already saved.
         if (self.step - 1) % self.save_interval != 0:
             self.save()

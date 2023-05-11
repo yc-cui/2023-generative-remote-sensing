@@ -18,6 +18,7 @@ rescale_learned_sigmas: false
 num_heads_upsample: -1
 channel_mult: ''
 dropout: 0.0
+max_step: 200000
 use_checkpoint: false
 use_new_attention_order: false
 image_size: 256
