@@ -53,4 +53,5 @@ lightning:
     accelerator: gpu
     devices: [0, 1, 2]
     max_epochs: 150
+    log_every_n_steps: 20
     # deterministic: True # may slow your machine
