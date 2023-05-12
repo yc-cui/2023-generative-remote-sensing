@@ -483,6 +483,7 @@ if __name__ == "__main__":
                 "filename": "{epoch:06}",
                 "verbose": True,
                 "save_last": True,
+                "period": 10,
             }
         }
         if hasattr(model, "monitor"):
