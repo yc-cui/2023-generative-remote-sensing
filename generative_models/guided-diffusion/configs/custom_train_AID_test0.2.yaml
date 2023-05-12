@@ -1,6 +1,7 @@
 attention_resolutions: 32,16,8
 class_cond: true
 batch_size: 16
+lr: 5e-6
 diffusion_steps: 1000
 learn_sigma: true
 noise_schedule: linear
