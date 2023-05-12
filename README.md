@@ -71,6 +71,10 @@ docker run --rm -d -v wandb:/vol -p 8087:8080  --name wandb-local wandb/local
 VQGAN ImageNet (f=16), 16384
 https://heibox.uni-heidelberg.de/d/a7530b09fed84f80a887/
 
+
+python scripts/sample_fast.py -r logs/temp -n 50 -k 600 -t 1.0 -p 0.92 --batch_size 5 --classes 27,28,29
+
+
 ------------------------------------------------------------------------------------
 
 

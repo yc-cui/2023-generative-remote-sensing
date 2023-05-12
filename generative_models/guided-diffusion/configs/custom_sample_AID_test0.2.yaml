@@ -26,4 +26,4 @@ clip_denoised: True
 num_samples: 10
 batch_size: 4
 use_ddim: False
-model_path: ./logs/256x256_diffusion.pt
+model_path: ./logs/model040000.pt
