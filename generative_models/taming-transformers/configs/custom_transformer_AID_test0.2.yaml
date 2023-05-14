@@ -15,6 +15,7 @@ model:
     first_stage_config:
       target: taming.models.vqgan.VQModel
       params:
+        ckpt_path: logs/temp/checkpoints/last.ckpt
         embed_dim: 256
         n_embed: 16384
         ddconfig:
@@ -63,7 +64,7 @@ data:
 lightning:
     trainer: 
       accumulate_grad_batches: 8
-      precision: 16
+      # precision: 16
       accelerator: 'gpu'
-      devices: [0, 1]
+      devices: [0]
       max_epochs: 60
