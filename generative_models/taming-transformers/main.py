@@ -13,7 +13,8 @@ from pytorch_lightning.utilities import rank_zero_only
 
 from taming.data.utils import custom_collate
 import wandb
-
+import warnings
+warnings.filterwarnings("ignore")
 # os.environ["WANDB_API_KEY"] = "local-226655cb016a45acfe3d80098cf4de3ff1cd5a09"
 # os.environ["WANDB_MODE"] = "offline"
 
@@ -165,24 +166,21 @@ class DataModuleFromConfig(pl.LightningDataModule):
                 self.datasets[k] = WrappedDataset(self.datasets[k])
 
     def _train_dataloader(self):
-        # return DataLoader(self.datasets["train"], batch_size=self.batch_size,
-        #                   num_workers=self.num_workers, shuffle=True, collate_fn=custom_collate)
         return DataLoader(self.datasets["train"], batch_size=self.batch_size,
-                          num_workers=self.num_workers, shuffle=True, pin_memory=True)
+                          num_workers=self.num_workers, shuffle=True, pin_memory=True, collate_fn=custom_collate)
+
 
     def _val_dataloader(self):
-        # return DataLoader(self.datasets["validation"],
-        #                   batch_size=self.batch_size,
-        #                   num_workers=self.num_workers, collate_fn=custom_collate)
         return DataLoader(self.datasets["validation"],
-                  batch_size=self.batch_size,
-                  num_workers=self.num_workers, pin_memory=True)
+                          batch_size=self.batch_size,
+                          num_workers=self.num_workers, 
+                          pin_memory=True,collate_fn=custom_collate)
+
 
     def _test_dataloader(self):
-        # return DataLoader(self.datasets["test"], batch_size=self.batch_size,
-        #                   num_workers=self.num_workers, collate_fn=custom_collate)
         return DataLoader(self.datasets["test"], batch_size=self.batch_size,
-                          num_workers=self.num_workers, pin_memory=True)
+                          num_workers=self.num_workers, pin_memory=True, collate_fn=custom_collate)
+
 
 
 class SetupCallback(Callback):

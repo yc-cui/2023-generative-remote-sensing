@@ -8,9 +8,9 @@ model:
       target: taming.modules.transformer.mingpt.GPT
       params:
         vocab_size: 16384
-        block_size: 64 # 256
-        n_layer: 24 # 48
-        n_head: 12 # 24
+        block_size: 254
+        n_layer: 48
+        n_head: 24
         n_embd: 1536
     first_stage_config:
       target: taming.models.vqgan.VQModel
@@ -20,10 +20,10 @@ model:
         ddconfig:
           double_z: false
           z_channels: 256
-          resolution: 64 # 256
+          resolution: 256
           in_channels: 3
           out_ch: 3
-          ch: 64 # 128
+          ch: 128
           ch_mult:
           - 1
           - 1
