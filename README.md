@@ -49,6 +49,8 @@ python main.py --base configs/custom_cond_AID_test0.2.yaml -t True --resume logs
 python main.py --base configs/custom_vqgan_AID_test0.2.yaml -t True 
 python main.py --base configs/custom_vqgan_AID_test0.2.yaml -t True ;  /usr/bin/shutdown   
 
+python main.py --base configs/custom_transformer_AID_test0.2.yaml -t True --resume logs/2023-05-15T14-17-42_custom_transformer_AID_test0.2;  /usr/bin/shutdown   
+
 42, 1126, 2000, 3407, 31415
 
 
