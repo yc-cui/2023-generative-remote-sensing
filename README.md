@@ -2,7 +2,7 @@
 
 
 ## Environment
-
+nohup jupyter-notebook --no-browser --port=8888 &
 https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 /hy-tmp/miniconda3
 https://mirror.tuna.tsinghua.edu.cn/help/anaconda/
@@ -68,7 +68,7 @@ apt-get install libsm6
 
 
 
-docker run --rm -d -v wandb:/vol -p 8087:8080  --name wandb-local wandb/local
+docker run --rm -d -v wandb:/vol -p 8080:8080  --name wandb-local wandb/local
 
 VQGAN ImageNet (f=16), 16384
 https://heibox.uni-heidelberg.de/d/a7530b09fed84f80a887/
@@ -136,3 +136,5 @@ image_datasets.py num_workers=14
 -------------------------------------------------------------
 zip -r AID_test0.2.zip AID_test0.2/*
 tar czvf AID_test0.tar.gz AID_test0.2/*
+
+
