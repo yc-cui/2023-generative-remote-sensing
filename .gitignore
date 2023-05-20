@@ -2,6 +2,7 @@ __pycache__
 **/__pycache__
 datasets/decomp/*
 datasets/raw/*
+datasets/new/AID*
 
 generative_models/taming-transformers/logs/*
 generative_models/taming-transformers/taming_transformers.egg-info
