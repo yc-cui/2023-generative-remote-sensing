@@ -249,6 +249,7 @@ class Net2NetTransformer(pl.LightningModule):
                 log["conditioning"][i] = plotter(quant_c[i], label_for_category_no, figure_size)
             log["conditioning_rec"] = log["conditioning"]
         elif self.cond_stage_key not in ["image", "class_label"]:
+        # elif self.cond_stage_key != "image":
             cond_rec = self.cond_stage_model.decode(quant_c)
             if self.cond_stage_key == "segmentation":
                 # get image from segmentation mask

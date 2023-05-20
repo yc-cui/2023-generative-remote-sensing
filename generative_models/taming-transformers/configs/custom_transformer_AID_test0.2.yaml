@@ -1,5 +1,5 @@
 model:
-  base_learning_rate: 4.5e-6
+  base_learning_rate: 4.5e-7
   target: taming.models.cond_transformer.Net2NetTransformer
   params:
     first_stage_key: image
@@ -8,14 +8,17 @@ model:
       target: taming.modules.transformer.mingpt.GPT
       params:
         vocab_size: 16384
-        block_size: 254
+        block_size: 256
         n_layer: 48
         n_head: 24
         n_embd: 1536
+        embd_pdrop: 0.1
+        resid_pdrop: 0.1
+        attn_pdrop: 0.1
     first_stage_config:
       target: taming.models.vqgan.VQModel
       params:
-        ckpt_path: logs/temp/checkpoints/last.ckpt
+        ckpt_path: logs/2023-05-11T15-53-47_custom_vqgan_AID_test0.2/checkpoints/last.ckpt
         embed_dim: 256
         n_embed: 16384
         ddconfig:
@@ -45,26 +48,26 @@ model:
 data:
   target: main.DataModuleFromConfig
   params:
-    batch_size: 1
-    num_workers: 8
+    batch_size: 24
+    num_workers: 10
     wrap: false
     train:
       target: taming.data.custom_cond_cls.CustomTrain
       params:
-        # training_images_list_file: /root/autodl-tmp/2023-generative-remote-sensing/datasets/data/cls/AID_test0.2/train.flist
-        training_images_list_file: /data/cyc/2023-generative-remote-sensing/datasets/data/cls/AID_test0.2/train.flist
-        size: 64 # 256
+        training_images_list_file: /root/autodl-tmp/2023-generative-remote-sensing/datasets/data/cls/AID_test0.2/train.flist
+        # training_images_list_file: /data/cyc/2023-generative-remote-sensing/datasets/data/cls/AID_test0.2/train.flist
+        size: 256
     validation:
       target: taming.data.custom_cond_cls.CustomTest
       params:
-        # test_images_list_file: /root/autodl-tmp/2023-generative-remote-sensing/datasets/data/cls/AID_test0.2/test.flist
-        test_images_list_file: /data/cyc/2023-generative-remote-sensing/datasets/data/cls/AID_test0.2/test.flist
-        size: 64 # 256
+        test_images_list_file: /root/autodl-tmp/2023-generative-remote-sensing/datasets/data/cls/AID_test0.2/test.flist
+        # test_images_list_file: /data/cyc/2023-generative-remote-sensing/datasets/data/cls/AID_test0.2/test.flist
+        size: 256
 
 lightning:
     trainer: 
-      accumulate_grad_batches: 8
+      # accumulate_grad_batches: 8
       # precision: 16
       accelerator: 'gpu'
       devices: [0]
-      max_epochs: 60
+      max_epochs: 100
