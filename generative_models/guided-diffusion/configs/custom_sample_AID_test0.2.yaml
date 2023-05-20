@@ -23,7 +23,7 @@ use_checkpoint: false
 use_new_attention_order: false
 image_size: 256
 clip_denoised: True
-num_samples: 10
-batch_size: 4
+num_samples: 10000
+batch_size: 20
 use_ddim: False
 model_path: ./logs/model040000.pt

@@ -128,3 +128,9 @@ bash scripts/image_sample.sh  configs/custom_sample_AID_test0.2.yaml
 script_util.py NUM_CLASSES = 30
 dist_util.py CUDA_VISIBLE_DEVICES
 image_datasets.py num_workers=14
+
+
+
+-------------------------------------------------------------
+zip -r AID_test0.2.zip AID_test0.2/*
+tar czvf AID_test0.tar.gz AID_test0.2/*
